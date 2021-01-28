@@ -1,0 +1,73 @@
+# Provides a button for maintainers to update the dist folder before a release
+# by having this workflow update the dist folder create a PR.
+#
+# Button: https://github.com/jupyterhub/action-k8s-await-workloads/actions?query=workflow%3A%22Package+to+./dist%22
+#
+# This is a GitHub workflow defining a set of jobs with a set of steps.
+# ref: https://docs.github.com/en/free-pro-team@latest/actions/reference/workflow-syntax-for-github-actions
+#
+---
+name: Package to ./dist
+
+on:
+  workflow_dispatch:
+
+jobs:
+  local-action:
+    name: Package to ./dist, commit, submit PR
+    runs-on: ubuntu-20.04
+
+    steps:
+      - uses: actions/checkout@v2
+
+      # https://github.com/actions/setup-node
+      - uses: actions/setup-node@v2
+        with:
+          node-version: "14"
+
+      - name: Install deps and update package-lock.json
+        run: |
+          npm install
+          git --no-pager diff --color=always
+
+      - name: Package to ./dist
+        run: |
+          npm run build
+          npm run package
+          git --no-pager diff --color=always
+
+      - name: Commit as github-actions[bot]
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add --force dist package-lock.json
+          git commit -m "Update ./dist and package-lock.json"
+
+      # https://github.com/peter-evans/create-pull-request
+      - name: Submit PR
+        uses: peter-evans/create-pull-request@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: package-for-release
+          delete-branch: true
+          title: "Release: update ./dist and package-lock.json"
+          body: |
+            Updates `./dist` and `package-lock.json` using commands below.
+
+            ```bash
+            npm install
+            npm run build
+            npm run package
+            ```
+
+            Merging this PR should be followed by cutting a release. A release can be cut by [creating a GitHub release][3] thanks to the [actions-tagger][4] action.
+
+            _This PR was created/updated by @${{ github.actor }} running [a GitHub Workflow][1] making use of the [create-pull-request][2] action._
+
+            [1]: https://github.com/jupyterhub/action-k8s-await-workloads/actions?query=workflow%3A%22Package+to+./dist%22
+            [2]: https://github.com/peter-evans/create-pull-request
+            [3]: https://github.com/jupyterhub/action-k8s-await-workloads/releases/new
+            [4]: https://github.com/Actions-R-Us/actions-tagger
+          labels: |
+            release

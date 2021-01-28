@@ -1,0 +1,21 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pending
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: pending
+  template:
+    metadata:
+      labels:
+        app: pending
+    spec:
+      # nodeSelector to ensure this pod never becomes scheduled
+      nodeSelector:
+        test.jupyter.org/node: no-node-has-this-label
+      containers:
+        - name: busybox
+          image: busybox
