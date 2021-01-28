@@ -1,0 +1,161 @@
+# Tests the local GitHub Action.
+#
+# This is a GitHub workflow defining a set of jobs with a set of steps.
+# ref: https://docs.github.com/en/free-pro-team@latest/actions/reference/workflow-syntax-for-github-actions
+#
+---
+name: Test
+
+on:
+  pull_request:
+  push:
+    branches-ignore:
+      - "v*"
+  workflow_dispatch:
+
+jobs:
+  autoformat:
+    name: Run autoformatter
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: "14"
+      - name: Install prettier
+        run: |
+          npm install prettier
+
+      # https://github.com/pre-commit/action
+      - uses: pre-commit/action@v2.0.0
+
+  # FIXME: we don't have any unit tests
+  # unit-test:
+  #   Name: Run npm test
+  #   runs-on: ubuntu-20.04
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - run: npm install
+  #     - run: npm run all
+
+  local-action:
+    name: Test ${{ matrix.job-name }}
+    runs-on: ubuntu-20.04
+
+    strategy:
+      fail-fast: false
+      matrix:
+        # ci-outcome should match the local actions outcome: success or failure
+        include:
+          - job-name: "success: specific workload is healthy"
+            input-workloads: deploy/healthy
+            input-timeout: 10
+            input-max-restarts: 0
+            ci-workloads: healthy non-ready restarted pending
+            ci-outcome: success
+
+          - job-name: "success: tolerate one restart"
+            input-timeout: 10
+            input-max-restarts: 1
+            ci-workloads: healthy restarted
+            ci-outcome: success
+
+          - job-name: "success: tolerate any restarts"
+            input-timeout: 10
+            ci-workloads: healthy restarted
+            ci-outcome: success
+
+          - job-name: "success: kube-system namespace"
+            input-namespace: kube-system
+            input-timeout: 10
+            input-max-restarts: 0
+            ci-workloads: non-ready
+            ci-outcome: success
+
+          - job-name: "failure: timeout, non-ready pod"
+            input-timeout: 10
+            input-max-restarts: 0
+            ci-workloads: healthy non-ready
+            ci-outcome: failure
+
+          - job-name: "failure: timeout, pending pod"
+            input-timeout: 10
+            input-max-restarts: 0
+            ci-workloads: healthy pending
+            ci-outcome: failure
+
+          - job-name: "failure: don't tolerate any restarts"
+            input-timeout: 10
+            input-max-restarts: 0
+            ci-workloads: healthy restarted
+            ci-outcome: failure
+
+    steps:
+      - uses: actions/checkout@v2
+
+      # https://github.com/actions/setup-node
+      - uses: actions/setup-node@v2
+        with:
+          node-version: "14"
+
+      - name: Package to ./dist for test
+        run: |
+          npm install
+          npm run build
+          npm run package
+
+      # Start a local k8s cluster
+      # https://github.com/jupyterhub/action-k3s-helm/
+      - name: Setup k8s
+        uses: jupyterhub/action-k3s-helm@v1
+        with:
+          # k3s-channel: https://update.k3s.io/v1-release/channels
+          k3s-channel: v1.19
+          metrics-enabled: false
+          traefik-enabled: false
+
+      # Prepare a set of pods with various conditions for testing of report
+      - name: "Prepare test workloads: restarted"
+        if: contains(matrix.ci-workloads, 'restarted')
+        run: |
+          kubectl apply -f ci/restarted.yaml
+
+      - name: "Prepare test workloads: healthy"
+        if: contains(matrix.ci-workloads, 'healthy')
+        run: |
+          kubectl apply -f ci/healthy.yaml
+
+      - name: "Prepare test workloads: non-ready"
+        if: contains(matrix.ci-workloads, 'non-ready')
+        run: |
+          kubectl apply -f ci/non-ready.yaml
+
+      - name: "Prepare test workloads: pending"
+        if: contains(matrix.ci-workloads, 'pending')
+        run: |
+          kubectl apply -f ci/pending.yaml
+
+      - name: Await workloads - inspect me!
+        uses: ./
+        id: local-action
+        continue-on-error: true
+        with:
+          workloads: ${{ matrix.input-workloads }}
+          namespace: ${{ matrix.input-namespace }}
+          timeout: ${{ matrix.input-timeout }}
+          max-restarts: ${{ matrix.input-max-restarts }}
+
+      # GitHub Action reference: https://github.com/jupyterhub/action-k8s-namespace-report
+      - name: Kubernetes namespace report
+        uses: jupyterhub/action-k8s-namespace-report@v1
+        if: always()
+        with:
+          namespace: "${{ matrix.input-namespace }}"
+
+      - name: "Verify local action outcome"
+        run: |
+          if [ "${{ steps.local-action.outcome }}" != "${{ matrix.ci-outcome }}" ]; then
+              echo "Action outcome was ${{ steps.local-action.outcome }}, but we expected ${{ matrix.ci-outcome }}!"
+              exit 1
+          fi

@@ -1,0 +1,30 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: non-ready
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: non-ready
+  template:
+    metadata:
+      labels:
+        app: non-ready
+    spec:
+      containers:
+        - name: busybox
+          image: busybox
+          # readinessProbe to ensure this pod never becomes ready
+          readinessProbe:
+            initialDelaySeconds: 0
+            httpGet:
+              path: /
+              port: 1234
+          command:
+            - sh
+            - -c
+            - >
+              printf "This pod is ready\nfor its\neternal sleep!\n";
+              sleep infinity;
