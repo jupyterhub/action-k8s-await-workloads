@@ -1,0 +1,151 @@
+#!/bin/bash
+
+# Purpose:
+# - To chart agnostically print relevant information of the resources in a
+#   namespace.
+#
+# Inputs:
+# - REPORT_IMPORTANT_WORKLOADS: space separated list of workloads, such as
+#   deploy/coredns.
+#
+# Report parts:
+# - Resource overview
+# - conditional: Pending pods
+# - conditional: Pods with non-ready container(s)
+# - conditional: Pods with restarted containers
+# - Important workload's logs
+#
+#
+# Relevant Kubernetes references:
+# - ContainerStatus ref: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.20/#containerstatus-v1-core
+#
+
+# Prepare format for printf
+# A bold colored topic with a divider with two colors depending on normal output or error related output.
+#
+# NOTE: We need to reapply formatting after each \n within a GitHub Workflow.
+#
+green=32
+red=31
+divider='--------------------------------------------------------------------------------'
+strong_divider='================================================================================'
+export f_h1_ok="\n\033[${green};1m%s\n\033[${green};1m${strong_divider}\033[0m\n"
+export f_h2_ok="\n\033[${green};1m%s\n\033[${green};1m${divider}\033[0m\n"
+export f_h3_ok="\n\033[${green};1m%s\033[0m\n"
+export f_h2_err="\n\033[${red};1m%s\n\033[${red};1m${divider}\033[0m\n"
+export f_h3_err="\n\033[${red};1m%s\033[0m\n"
+
+printf "$f_h1_ok" "# Full namespace report"
+
+# Provide a resource overview
+#
+printf "\n\n"
+printf "$f_h2_ok" "## Resource overview"
+printf "$f_h3_ok" "### \$ kubectl get deployment,statefulset,daemonset,pod"
+kubectl get deploy,sts,ds,pod
+printf "$f_h3_ok" "### \$ kubectl get secret,configmap"
+kubectl get secret,cm
+printf "$f_h3_ok" "### \$ kubectl get service,ingress,networkpolicy"
+kubectl get svc,ing,netpol
+printf "$f_h3_ok" "### \$ kubectl get serviceaccount,role,rolebinding"
+kubectl get sa,role,rolebinding
+
+
+# Check if any pods are pending
+#
+PODS_PENDING=$(
+    kubectl get pods -o json \
+        | jq -r '
+            .items[]
+            | select(.status.phase == "Pending")
+            | .metadata.name
+    '
+)
+if [ -n "$PODS_PENDING" ]; then
+    printf "\n\n"
+    printf "$f_h2_err" "## Pending pods detected!"
+    echo "$PODS_PENDING" | xargs --max-args=1 echo -
+
+    for var in $PODS_PENDING; do
+        printf "$f_h3_err" "### \$ kubectl describe pod/$var"
+        kubectl describe pod/$var
+    done
+fi
+
+
+# Check if any pod has a container with a non-ready status
+#
+PODS_NON_READY=$(
+    kubectl get pods -o json \
+        | jq -r '
+            .items[]
+            | select(
+                any(.status.initContainerStatuses[]?; .ready == false)
+                or
+                any(.status.containerStatuses[]?; .ready == false)
+            )
+            | .metadata.name
+    '
+)
+if [ -n "$PODS_NON_READY" ]; then
+    printf "\n\n"
+    printf "$f_h2_err" "## Pods with non-ready container(s) detected!"
+    echo "$PODS_NON_READY" | xargs --max-args=1 echo -
+
+    for var in $PODS_NON_READY; do
+        printf "$f_h3_err" "### \$ kubectl describe pod/$var"
+        kubectl describe pod/$var
+        printf "$f_h3_err" "### \$ kubectl logs --all-containers pod/$var"
+        kubectl logs --all-containers pod/$var || echo  # a newline on failure for consistency
+    done
+
+fi
+
+
+# Check if any container of any pod has a restartCount > 0. Then, we inspect
+# their logs with --previous.
+#
+# NOTE: We also add --follow and --ignore-errors in order to ensure we get the
+#       information from all containers, and combined with --previous it will
+#       exit and not get stuck.
+#
+#       ref: https://github.com/kubernetes/kubernetes/issues/97530
+#
+PODS_RESTARTED=$(
+    kubectl get pods -o json \
+        | jq -r '
+            .items[]
+            | select(
+                any(.status.initContainerStatuses[]?; .restartCount > 0)
+                or
+                any(.status.containerStatuses[]?; .restartCount > 0)
+            )
+            | .metadata.name
+    '
+)
+if [ -n "$PODS_RESTARTED" ]; then
+    printf "\n\n"
+    printf "$f_h2_err" "## Pods with restarted containers detected!"
+    echo "$PODS_RESTARTED" | xargs --max-args=1 echo -
+
+    for var in $PODS_RESTARTED; do
+        printf "$f_h3_err" "### \$ kubectl describe pod/$var"
+        kubectl describe pod/$var
+        printf "$f_h3_err" "### \$ kubectl logs --previous --all-containers --follow --ignore-errors pod/$var"
+        kubectl logs --previous --all-containers --follow --ignore-errors pod/$var || echo  # a newline on failure for consistency
+    done
+fi
+
+
+# Show container logs of all important workloads
+#
+if [ -n "$REPORT_IMPORTANT_WORKLOADS" ]; then
+    printf "\n\n"
+    printf "$f_h2_ok" "## Important workload's logs"
+    echo "$REPORT_IMPORTANT_WORKLOADS" | xargs --max-args=1 echo -
+
+    for var in $REPORT_IMPORTANT_WORKLOADS; do
+        printf "$f_h3_ok" "### \$ kubectl logs --all-containers $var"
+        kubectl logs --all-containers $var || echo  # a newline on failure for consistency
+    done
+fi

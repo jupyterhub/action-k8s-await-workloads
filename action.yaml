@@ -1,0 +1,47 @@
+# Reference: https://docs.github.com/en/free-pro-team@latest/actions/creating-actions/metadata-syntax-for-github-actions
+---
+name: Kubernetes namespace report
+description: |
+  Emits a report of the current k8s cluster and the current namespace.
+
+branding:
+  icon: server
+  color: purple
+
+inputs:
+  # Manually keep the descriptions synced with the readme!
+  namespace:
+    default: ""
+    description: "Updates the kubeconfig's current context's namespace to this namespace."
+    required: false
+  important-workloads:
+    default: ""
+    description: "Always provide logs of these workloads. Use space a separator, example: `deploy/my-deployment sts/my-statefulset`."
+    required: false
+
+# outputs:
+#   my-output:
+#     description: "..."
+#     value: "..."
+
+runs:
+  using: "composite"
+  steps:
+    - name: Validate input
+      shell: bash
+      run: |
+        exit 0
+
+    - name: Update current namespace
+      shell: bash
+      run: |
+        if [ -n "${{ inputs.namespace }}" ]; then
+            sudo --preserve-env kubectl config set-context --current --namespace="${{ inputs.namespace }}" > /dev/null
+        fi
+
+    - name: Emit namespace report
+      shell: bash
+      env:
+        REPORT_IMPORTANT_WORKLOADS: ${{ inputs.important-workloads }}
+      run: |
+        ${{ github.action_path }}/k8s-namespace-report
