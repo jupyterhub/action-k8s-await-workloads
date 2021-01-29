@@ -1,4 +1,5 @@
 # GitHub Action: Await k8s workloads
+
 [![GitHub Action badge](https://github.com/jupyterhub/action-k8s-await-workloads/workflows/Test/badge.svg)](https://github.com/jupyterhub/action-k8s-await-workloads/actions)
 
 GitHub Action to await Ready / Completed status of Kubernetes workloads, namely
@@ -6,6 +7,7 @@ Deployments, StatefulSets, DaemonSets, and Jobs. If a workload's pods have a
 container that restarts, the wait will stop.
 
 ## Optional input parameters
+
 - `accepted-container-restarts`: Aborts after this many container restarts for
   any given container. Defaults to `0`.
 - `timeout`: Aborts after this time. Defaults to `""` and accepts strings like
@@ -31,7 +33,7 @@ jobs:
       - name: Setup k8s
         uses: jupyterhub/action-k3s-helm@v1
         with:
-          k3s-channel: v1.20    # https://update.k3s.io/v1-release/channels
+          k3s-channel: v1.20 # https://update.k3s.io/v1-release/channels
 
       - name: Startup workloads
         run: |

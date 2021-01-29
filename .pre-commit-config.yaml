@@ -14,6 +14,7 @@ repos:
     rev: v2.2.1
     hooks:
       - id: prettier
+        exclude: dist
 
   # Autoformat: bash
   - repo: https://github.com/lovesegfault/beautysh

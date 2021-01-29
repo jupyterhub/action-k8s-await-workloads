@@ -66,7 +66,6 @@ jobs:
           metrics-enabled: false
           traefik-enabled: false
 
-
       # Prepare a set of pods with various conditions for testing of report
       - name: "Prepare test pods: restarted"
         if: contains(matrix.test-pods, 'restarted')
@@ -93,7 +92,6 @@ jobs:
         run: |
           sleep 10
 
-
       # IMPORTANT: This step only only tests that the action doesn't error
       #            unexpectedly. Please rely on manual inspection of the report.
       - name: Kubernetes namespace report - Inspect me!
@@ -102,7 +100,6 @@ jobs:
         with:
           namespace: ${{ matrix.test-namespace }}
           important-workloads: ${{ matrix.test-important-workloads }}
-
 
       # - name: Validate local action's set outputs/envs
       #   run: |
