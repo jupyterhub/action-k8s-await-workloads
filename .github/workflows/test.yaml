@@ -28,8 +28,16 @@ jobs:
       # https://github.com/pre-commit/action
       - uses: pre-commit/action@v2.0.0
 
-  test:
-    name: Run tests
+  npm-test:
+    Name: Run npm test
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - run: npm ci
+      - run: npm test
+
+  local-action:
+    name: Run local action
     runs-on: ubuntu-20.04
 
     strategy:

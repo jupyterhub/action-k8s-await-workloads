@@ -29,18 +29,5 @@ outputs:
     value: "not yet implemented"
 
 runs:
-  using: "composite"
-  steps:
-    - name: Validate input
-      shell: bash
-      # FIXME: Add validation logic
-      run: |
-        exit 0
-
-    - name: Await workloads
-      shell: bash
-      env:
-        INPUT_MAX_RESTARTS: "${{ inputs.max-restarts }}"
-        INPUT_MAX_TIME: "${{ inputs.max-time }}"
-      run: |
-        ${{ github.action_path }}/k8s-await-workloads
+  using: 'node12'
+  main: 'dist/index.js'
