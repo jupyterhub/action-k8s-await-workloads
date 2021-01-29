@@ -2,6 +2,6 @@ version: 2
 updates:
   # Update `package.json` and `package-lock.json`
   - package-ecosystem: "npm"
-    directory: "/src"
+    directory: "/"
     schedule:
       interval: "daily"
