@@ -1,18 +1,17 @@
 # GitHub Action: Await k8s workloads
 [![GitHub Action badge](https://github.com/jupyterhub/action-k8s-await-workloads/workflows/Test/badge.svg)](https://github.com/jupyterhub/action-k8s-await-workloads/actions)
 
-GitHub Action to await Ready / Completed status of k8s workloads, namely
+GitHub Action to await Ready / Completed status of Kubernetes workloads, namely
 Deployments, StatefulSets, DaemonSets, and Jobs. If a workload's pods have a
 container that restarts, the wait will stop.
 
 ## Optional input parameters
-- `max-restarts`: Maximum restarts of a container to tolerate before aborting
-  wait.
-- `max-time`: Maximum total time to await all workloads.
-
-## Outputs
-
-- `duration`: The total duration waited.
+- `accepted-container-restarts`: Aborts after this many container restarts for
+  any given container. Defaults to `0`.
+- `timeout`: Aborts after this time. Defaults to `""` and accepts strings like
+  `"10m"`.
+- `workload-timeout`: Aborts after this time awaiting an individual workload.
+  Defaults to `""` and accepts strings like `"2m30s"`.
 
 ## Example
 

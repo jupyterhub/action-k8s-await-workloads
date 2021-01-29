@@ -1,8 +1,10 @@
 # Reference: https://docs.github.com/en/free-pro-team@latest/actions/creating-actions/metadata-syntax-for-github-actions
 ---
-name: Kubernetes namespace report
-description: |
-  Emits a report of the current k8s cluster and the current namespace.
+name: Await workloads
+description: >
+  Awaits Ready / Completed status of Kubernetes workloads, namely Deployments,
+  StatefulSets, DaemonSets, and Jobs. If a workload's pods have a container that
+  restarts, the wait will stop.
 
 branding:
   icon: server
@@ -10,38 +12,35 @@ branding:
 
 inputs:
   # Manually keep the descriptions synced with the readme!
-  namespace:
-    default: ""
-    description: "Updates the kubeconfig's current context's namespace to this namespace."
+  max-restarts:
+    default: 0
+    description: Maximum restarts of a container to tolerate before aborting wait.
     required: false
-  important-workloads:
-    default: ""
-    description: "Always provide logs of these workloads. Use space a separator, example: `deploy/my-deployment sts/my-statefulset`."
+  max-time:
+    default: 0
+    description: Maximum total time to await all workloads.
     required: false
 
-# outputs:
-#   my-output:
-#     description: "..."
-#     value: "..."
+outputs:
+  # Manually keep the descriptions synced with the readme!
+  # FIXME: measure total duration waited
+  duration:
+    description: The total duration waited.
+    value: "not yet implemented"
 
 runs:
   using: "composite"
   steps:
     - name: Validate input
       shell: bash
+      # FIXME: Add validation logic
       run: |
         exit 0
 
-    - name: Update current namespace
-      shell: bash
-      run: |
-        if [ -n "${{ inputs.namespace }}" ]; then
-            sudo --preserve-env kubectl config set-context --current --namespace="${{ inputs.namespace }}" > /dev/null
-        fi
-
-    - name: Emit namespace report
+    - name: Await workloads
       shell: bash
       env:
-        REPORT_IMPORTANT_WORKLOADS: ${{ inputs.important-workloads }}
+        INPUT_MAX_RESTARTS: "${{ inputs.max-restarts }}"
+        INPUT_MAX_TIME: "${{ inputs.max-time }}"
       run: |
-        ${{ github.action_path }}/k8s-namespace-report
+        ${{ github.action_path }}/k8s-await-workloads
