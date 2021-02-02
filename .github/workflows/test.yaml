@@ -50,43 +50,43 @@ jobs:
         include:
           - job-name: "success: specific workload is healthy"
             input-workloads: deploy/healthy
-            input-timeout: 10
+            input-timeout: 20
             input-max-restarts: 0
             ci-workloads: healthy non-ready restarted pending
             ci-outcome: success
 
           - job-name: "success: tolerate one restart"
-            input-timeout: 10
+            input-timeout: 20
             input-max-restarts: 1
             ci-workloads: healthy restarted
             ci-outcome: success
 
           - job-name: "success: tolerate any restarts"
-            input-timeout: 10
+            input-timeout: 20
             ci-workloads: healthy restarted
             ci-outcome: success
 
           - job-name: "success: kube-system namespace"
             input-namespace: kube-system
-            input-timeout: 10
+            input-timeout: 20
             input-max-restarts: 0
             ci-workloads: non-ready
             ci-outcome: success
 
           - job-name: "failure: timeout, non-ready pod"
-            input-timeout: 10
+            input-timeout: 20
             input-max-restarts: 0
             ci-workloads: healthy non-ready
             ci-outcome: failure
 
           - job-name: "failure: timeout, pending pod"
-            input-timeout: 10
+            input-timeout: 20
             input-max-restarts: 0
             ci-workloads: healthy pending
             ci-outcome: failure
 
           - job-name: "failure: don't tolerate any restarts"
-            input-timeout: 10
+            input-timeout: 20
             input-max-restarts: 0
             ci-workloads: healthy restarted
             ci-outcome: failure
