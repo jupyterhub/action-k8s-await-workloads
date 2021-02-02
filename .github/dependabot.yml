@@ -1,7 +1,22 @@
+# dependabot.yml reference: https://docs.github.com/en/free-pro-team@latest/github/administering-a-repository/configuration-options-for-dependency-updates
+#
+# Notes:
+# - Status and logs from dependabot are provided at
+#   https://github.com/jupyterhub/action-k8s-await-workloads/network/updates.
+# - YAML anchors are not supported here or in GitHub Workflows.
+# - We explicitly set the "maintenance" label to help our changelog generator
+#   tool github-activity to categorize PRs.
+#
 version: 2
 updates:
   # Update `package.json` and `package-lock.json`
-  - package-ecosystem: "npm"
-    directory: "/"
+  - package-ecosystem: npm
+    directory: /
+    versioning-strategy: increase-if-necessary
     schedule:
-      interval: "daily"
+      interval: weekly
+      day: monday
+      time: 06:00
+    labels:
+      - maintenance
+      - dependencies
