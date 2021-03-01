@@ -13,6 +13,8 @@ updates:
   - package-ecosystem: npm
     directory: /
     versioning-strategy: increase-if-necessary
+    allow:
+      - dependency-type: production
     schedule:
       interval: weekly
       day: monday
