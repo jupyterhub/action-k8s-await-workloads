@@ -23,7 +23,7 @@ DaemonSets, Deployments, and StatefulSets.
 - `timeout`: Aborts after this time in seconds. Defaults to `-1` which means
   infinite.
 - `max-restarts`: Aborts after this many container restarts for any given
-  container. Defaults to `-1` which means infinite.
+  container. Defaults to `0`. `-1` means infinite.
 
 ## Example
 
