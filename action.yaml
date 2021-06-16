@@ -34,7 +34,7 @@ inputs:
     required: false
     description: >
       Aborts after this many container restarts for any given container.
-      Defaults to `-1` which means infinite.
+      Defaults to `0`. `-1` means infinite.
 
 runs:
   using: "node12"
