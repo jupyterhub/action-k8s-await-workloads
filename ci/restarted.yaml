@@ -36,3 +36,13 @@ spec:
                   printf "This is logged \njust before the container \nis about to crash!\n";
                   exit 123;
               fi;
+          # readinessProbe helps us avoid becoming ready until an initial
+          # restart has been made.
+          readinessProbe:
+            exec:
+              command:
+                - sh
+                - -c
+                - cat /tmp/mount/here && sleep 1
+            initialDelaySeconds: 0
+            periodSeconds: 2
