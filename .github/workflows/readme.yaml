@@ -11,9 +11,9 @@ jobs:
     steps:
       # GitHub Action reference: https://github.com/jupyterhub/action-k3s-helm
       - name: Setup k8s cluster
-        uses: jupyterhub/action-k3s-helm@v1
+        uses: jupyterhub/action-k3s-helm@v2
         with:
-          k3s-channel: v1.20 # https://update.k3s.io/v1-release/channels
+          k3s-channel: v1.23 # https://update.k3s.io/v1-release/channels
           metrics-enabled: false
           traefik-enabled: false
 
@@ -21,12 +21,11 @@ jobs:
       - name: Install jupyterhub Helm chart
         run: |
           helm install jupyterhub jupyterhub \
-              --repo https://jupyterhub.github.io/helm-chart/ \
-              --version=0.11.1-n082.h437ed29d
+              --repo https://jupyterhub.github.io/helm-chart/
 
       # GitHub Action reference: https://github.com/jupyterhub/action-k8s-await-workloads
       - name: Await jupyterhub
-        uses: jupyterhub/action-k8s-await-workloads@main
+        uses: jupyterhub/action-k8s-await-workloads@v1
         with:
           workloads: "" # all
           namespace: "" # default

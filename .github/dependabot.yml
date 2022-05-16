@@ -19,6 +19,16 @@ updates:
       interval: weekly
       day: monday
       time: "06:00"
+      timezone: "Etc/UTC"
     labels:
       - maintenance
       - dependencies
+
+  # Maintain dependencies in our GitHub Workflows
+  - package-ecosystem: "github-actions"
+    directory: "/" # This should be / rather than .github/workflows
+    schedule:
+      interval: weekly
+      day: monday
+      time: "06:00"
+      timezone: "Etc/UTC"
