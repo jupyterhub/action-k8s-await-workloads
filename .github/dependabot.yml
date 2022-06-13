@@ -18,7 +18,7 @@ updates:
     schedule:
       interval: weekly
       day: monday
-      time: "06:00"
+      time: "05:00"
       timezone: "Etc/UTC"
     labels:
       - maintenance
@@ -30,5 +30,5 @@ updates:
     schedule:
       interval: weekly
       day: monday
-      time: "06:00"
+      time: "05:00"
       timezone: "Etc/UTC"
