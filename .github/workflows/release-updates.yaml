@@ -15,13 +15,6 @@ jobs:
       contents: write
     steps:
       # Action reference: https://github.com/Actions-R-Us/actions-tagger
-      # NOTE: We pin a version not to have the source code (.ts files), but the
-      #       compiled source code (.js files). This git hash is what v2.0.1
-      #       referenced 30 December 2020.
       - uses: Actions-R-Us/actions-tagger@f411bd910a5ad370d4511517e3eac7ff887c90ea
-        env:
-          GITHUB_TOKEN: "${{ github.token }}"
         with:
-          # By using branches as identifiers it is still possible to backtrack
-          # some patch, but not if we use tags.
-          prefer_branch_releases: true
+          token: "${{ github.token }}"
