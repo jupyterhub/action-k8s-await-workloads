@@ -109,7 +109,7 @@ jobs:
       # Start a local k8s cluster
       # https://github.com/jupyterhub/action-k3s-helm/
       - name: Setup k8s
-        uses: jupyterhub/action-k3s-helm@v2
+        uses: jupyterhub/action-k3s-helm@v3
         with:
           # k3s-channel: https://update.k3s.io/v1-release/channels
           k3s-channel: v1.23
