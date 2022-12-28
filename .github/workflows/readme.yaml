@@ -7,13 +7,13 @@ on:
 
 jobs:
   k8s-test:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
       # GitHub Action reference: https://github.com/jupyterhub/action-k3s-helm
       - name: Setup k8s cluster
         uses: jupyterhub/action-k3s-helm@v3
         with:
-          k3s-channel: v1.23 # https://update.k3s.io/v1-release/channels
+          k3s-channel: v1.25 # https://update.k3s.io/v1-release/channels
           metrics-enabled: false
           traefik-enabled: false
 
@@ -23,16 +23,16 @@ jobs:
           helm install jupyterhub jupyterhub \
               --repo https://jupyterhub.github.io/helm-chart/
 
-      # GitHub Action reference: https://github.com/jupyterhub/action-k8s-await-workloads
+      # GitHub Action reference: https://github.com/jupyterhub/action-k8s-await-workloads#readme
       - name: Await jupyterhub
-        uses: jupyterhub/action-k8s-await-workloads@v1
+        uses: jupyterhub/action-k8s-await-workloads@v2
         with:
           workloads: "" # all
           namespace: "" # default
           timeout: 60
           max-restarts: 0
 
-      # GitHub Action reference: https://github.com/jupyterhub/action-k8s-namespace-report
+      # GitHub Action reference: https://github.com/jupyterhub/action-k8s-namespace-report#readme
       - name: Emit namespace report
         uses: jupyterhub/action-k8s-namespace-report@v1
         if: always()
