@@ -1,4 +1,3 @@
-import * as core from "@actions/core"
 import * as exec from "@actions/exec"
 
 import * as log from "./log"
@@ -41,7 +40,7 @@ export async function getRestartedPods(
               ownerType = "deploy"
               ownerName = ownerName.split("-").slice(0, -1).join("-")
             }
-            let wl = input.normWorkload(`${ownerType}/${ownerName}`)
+            const wl = input.normWorkload(`${ownerType}/${ownerName}`)
             if (wls.includes(wl)) {
               restartedPods.push(podName)
             }
