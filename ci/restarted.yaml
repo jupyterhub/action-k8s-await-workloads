@@ -43,6 +43,6 @@ spec:
               command:
                 - sh
                 - -c
-                - cat /tmp/mount/here && sleep 1
+                - cat /tmp/mount/here
             initialDelaySeconds: 0
             periodSeconds: 2
