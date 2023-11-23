@@ -43,7 +43,7 @@ jobs:
       - name: Setup k8s cluster
         uses: jupyterhub/action-k3s-helm@v3
         with:
-          k3s-channel: v1.25 # https://update.k3s.io/v1-release/channels
+          k3s-channel: stable # https://update.k3s.io/v1-release/channels
           metrics-enabled: false
           traefik-enabled: false
 
