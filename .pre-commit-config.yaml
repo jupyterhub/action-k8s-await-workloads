@@ -9,24 +9,25 @@
 # - Register git hooks: pre-commit install --install-hooks
 #
 repos:
-  # Autoformat: markdown, yaml, json
+  # Autoformat: javascript, markdown, yaml, json
   - repo: https://github.com/pre-commit/mirrors-prettier
-    rev: v2.5.1
+    rev: v3.1.0
     hooks:
       - id: prettier
 
-  # Autoformat and lint: typescript
-  - repo: local
+  # Lint: javascript
+  - repo: https://github.com/pre-commit/mirrors-eslint
+    rev: v8.54.0
     hooks:
-      - id: format
-        name: Autoformat typescript
-        files: ".*\\.ts"
-        entry: npm run format
-        language: system
-        pass_filenames: false
-      - id: lint
-        name: Lint typescript
-        files: "src/.*\\.ts"
-        entry: npm run lint
-        language: system
-        pass_filenames: false
+      - id: eslint
+        # These are not pinned to avoid manual maintenance up updating them, at
+        # the same time, they could cause a failure if something breaking is
+        # introduced.
+        additional_dependencies:
+          - eslint
+          - eslint-plugin-jest
+          - jest
+
+# pre-commit.ci config reference: https://pre-commit.ci/#configuration
+ci:
+  autoupdate_schedule: monthly
