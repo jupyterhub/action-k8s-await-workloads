@@ -40,7 +40,11 @@ export async function monitorRollout(
       core.info(`- ${wl} (${dur}s)`)
       resolve()
     } catch (error) {
-      log.fail(`rollout of ${wl}`, `${(error as Error).message}\n${stderr}`)
+      if (error instanceof Error) {
+        log.fail(`rollout of ${wl}`, `${error.message}\n${stderr}`)
+      } else {
+        log.fail(`rollout of ${wl}`, `\n${stderr}`)
+      }
       process.exit(1)
     }
   })
