@@ -59,7 +59,7 @@ export async function run(): Promise<void> {
     }
     process.exit(0)
   } catch (error) {
-    log.fail("unknown", error.message)
+    log.fail("unknown", (error as Error).message)
     process.exit(1)
   }
 }
