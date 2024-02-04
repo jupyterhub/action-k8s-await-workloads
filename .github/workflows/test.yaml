@@ -1,9 +1,3 @@
-# Tests the local GitHub Action.
-#
-# This is a GitHub workflow defining a set of jobs with a set of steps.
-# ref: https://docs.github.com/en/free-pro-team@latest/actions/reference/workflow-syntax-for-github-actions
-#
----
 name: Test
 
 on:
@@ -18,12 +12,12 @@ on:
 jobs:
   autoformat:
     name: Run autoformatter
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
-          python-version: "3.9"
+          python-version: "3.12"
       - uses: actions/setup-node@v4
 
       - run: pip install pre-commit
@@ -34,7 +28,7 @@ jobs:
   # FIXME: we don't have any unit tests
   # unit-test:
   #   Name: Run npm test
-  #   runs-on: ubuntu-20.04
+  #   runs-on: ubuntu-22.04
   #   steps:
   #     - uses: actions/checkout@v4
   #     - run: npm install
@@ -42,7 +36,7 @@ jobs:
 
   local-action:
     name: Test ${{ matrix.job-name }}
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
 
     strategy:
       fail-fast: false
@@ -98,7 +92,7 @@ jobs:
       # https://github.com/actions/setup-node
       - uses: actions/setup-node@v4
         with:
-          node-version: 16
+          node-version: "20"
 
       - name: Package to ./dist for test
         run: |
@@ -112,7 +106,7 @@ jobs:
         uses: jupyterhub/action-k3s-helm@v4
         with:
           # k3s-channel: https://update.k3s.io/v1-release/channels
-          k3s-channel: v1.23
+          k3s-channel: latest
           metrics-enabled: false
           traefik-enabled: false
 

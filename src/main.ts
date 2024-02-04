@@ -21,10 +21,10 @@ import * as timeout from "./timeout"
 export async function run(): Promise<void> {
   try {
     // parse input
-    let inWls = core.getInput("workloads")
-    let inNs = core.getInput("namespace")
-    let inTimeout = input.parseIntegerInput("timeout", -1)
-    let inMax = input.parseIntegerInput("max-restarts", -1)
+    const inWls = core.getInput("workloads")
+    const inNs = core.getInput("namespace")
+    const inTimeout = input.parseIntegerInput("timeout", -1)
+    const inMax = input.parseIntegerInput("max-restarts", -1)
 
     // print settings
     log.log("Awaiting workloads", {level: 1})
@@ -59,7 +59,11 @@ export async function run(): Promise<void> {
     }
     process.exit(0)
   } catch (error) {
-    log.fail("unknown", error.message)
+    if (error instanceof Error) {
+      log.fail("unknown", error.message)
+    } else {
+      log.fail("unknown error")
+    }
     process.exit(1)
   }
 }

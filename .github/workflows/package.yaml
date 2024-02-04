@@ -3,10 +3,6 @@
 #
 # Button: https://github.com/jupyterhub/action-k8s-await-workloads/actions?query=workflow%3A%22Package+to+./dist%22
 #
-# This is a GitHub workflow defining a set of jobs with a set of steps.
-# ref: https://docs.github.com/en/free-pro-team@latest/actions/reference/workflow-syntax-for-github-actions
-#
----
 name: Package to ./dist
 
 on:
@@ -26,7 +22,7 @@ jobs:
       # https://github.com/actions/setup-node
       - uses: actions/setup-node@v4
         with:
-          node-version: "16"
+          node-version: "20"
 
       - name: Install deps and update package-lock.json
         run: |
