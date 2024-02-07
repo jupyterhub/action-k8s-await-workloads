@@ -1,6 +1,30 @@
 # Changelog
 
-## 1.0
+## v3.0
+
+### v3.0.0 - 2024-02-07
+
+([full changelog](https://github.com/jupyterhub/action-k8s-await-workloads/compare/v2.0.0...v3.0.0))
+
+#### Breaking Changes
+
+- Update to use node 20, and ci/docs/linting details [#71](https://github.com/jupyterhub/action-k8s-await-workloads/pull/71) ([@consideRatio](https://github.com/consideRatio), [@manics](https://github.com/manics))
+
+#### Maintenance and upkeep improvements
+
+- build(deps): bump @actions/core from 1.10.0 to 1.10.1 [#63](https://github.com/jupyterhub/action-k8s-await-workloads/pull/63) ([@consideRatio](https://github.com/consideRatio))
+- dependabot: monthly updates of github actions [#61](https://github.com/jupyterhub/action-k8s-await-workloads/pull/61) ([@consideRatio](https://github.com/consideRatio))
+
+#### Contributors to this release
+
+The following people contributed discussions, new ideas, code and documentation contributions, and review.
+See [our definition of contributors](https://github-activity.readthedocs.io/en/latest/#how-does-this-tool-define-contributions-in-the-reports).
+
+([GitHub contributors page for this release](https://github.com/jupyterhub/action-k8s-await-workloads/graphs/contributors?from=2022-12-29&to=2024-02-05&type=c))
+
+@consideRatio ([activity](https://github.com/search?q=repo%3Ajupyterhub%2Faction-k8s-await-workloads+involves%3AconsideRatio+updated%3A2022-12-29..2024-02-05&type=Issues)) | @manics ([activity](https://github.com/search?q=repo%3Ajupyterhub%2Faction-k8s-await-workloads+involves%3Amanics+updated%3A2022-12-29..2024-02-05&type=Issues))
+
+## v2.0
 
 ### v2.0.0 - 2022-12-29
 
@@ -51,6 +75,8 @@ The action is now executed using Node 16.
 ([GitHub contributors page for this release](https://github.com/jupyterhub/action-k8s-await-workloads/graphs/contributors?from=2021-01-31&to=2022-12-28&type=c))
 
 [@consideRatio](https://github.com/search?q=repo%3Ajupyterhub%2Faction-k8s-await-workloads+involves%3AconsideRatio+updated%3A2021-01-31..2022-12-28&type=Issues) | [@macobo](https://github.com/search?q=repo%3Ajupyterhub%2Faction-k8s-await-workloads+involves%3Amacobo+updated%3A2021-01-31..2022-12-28&type=Issues)
+
+## v1.0
 
 ### v1.0.0 - 2021-01-31
 
