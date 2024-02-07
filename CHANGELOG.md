@@ -2,7 +2,7 @@
 
 ## v3.0
 
-### v3.0.0 - 2024-02-06
+### v3.0.0 - 2024-02-07
 
 ([full changelog](https://github.com/jupyterhub/action-k8s-await-workloads/compare/v2.0.0...v3.0.0))
 
