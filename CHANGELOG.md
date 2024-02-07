@@ -2,6 +2,14 @@
 
 ## v3.0
 
+### v3.0.1 - 2024-02-07
+
+([full changelog](https://github.com/jupyterhub/action-k8s-await-workloads/compare/v3.0.0...v3.0.1))
+
+#### Maintenance and upkeep improvements
+
+- Release: update ./dist and package-lock.json [#73](https://github.com/jupyterhub/action-k8s-await-workloads/pull/73) ([@consideRatio](https://github.com/consideRatio))
+
 ### v3.0.0 - 2024-02-07
 
 ([full changelog](https://github.com/jupyterhub/action-k8s-await-workloads/compare/v2.0.0...v3.0.0))
