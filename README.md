@@ -41,7 +41,7 @@ jobs:
     steps:
       # GitHub Action reference: https://github.com/jupyterhub/action-k3s-helm
       - name: Setup k8s cluster
-        uses: jupyterhub/action-k3s-helm@v3
+        uses: jupyterhub/action-k3s-helm@v4
         with:
           k3s-channel: stable # https://update.k3s.io/v1-release/channels
           metrics-enabled: false
@@ -55,7 +55,7 @@ jobs:
 
       # GitHub Action reference: https://github.com/jupyterhub/action-k8s-await-workloads#readme
       - name: Await jupyterhub
-        uses: jupyterhub/action-k8s-await-workloads@v2
+        uses: jupyterhub/action-k8s-await-workloads@v3
         with:
           workloads: "" # all
           namespace: "" # default
