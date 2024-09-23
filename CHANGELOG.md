@@ -2,6 +2,18 @@
 
 ## v3.0
 
+### v3.0.2 - 2024-09-23
+
+([full changelog](https://github.com/jupyterhub/action-k8s-await-workloads/compare/v3.0.1...v3.0.2))
+
+#### Bugs fixed
+
+- Fix failure to transition to node20 [#76](https://github.com/jupyterhub/action-k8s-await-workloads/pull/76) ([@consideRatio](https://github.com/consideRatio))
+
+#### Continuous integration improvements
+
+- build(deps): bump jupyterhub/action-k8s-await-workloads from 2 to 3 [#75](https://github.com/jupyterhub/action-k8s-await-workloads/pull/75) ([@consideRatio](https://github.com/consideRatio))
+
 ### v3.0.1 - 2024-02-07
 
 ([full changelog](https://github.com/jupyterhub/action-k8s-await-workloads/compare/v3.0.0...v3.0.1))
