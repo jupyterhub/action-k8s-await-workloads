@@ -37,5 +37,5 @@ inputs:
       Defaults to `0`. `-1` means infinite.
 
 runs:
-  using: node16
+  using: node20
   main: "dist/index.js"
