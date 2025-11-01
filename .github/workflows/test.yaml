@@ -18,7 +18,7 @@ jobs:
       - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
-      - uses: actions/setup-node@v5
+      - uses: actions/setup-node@v6
 
       - run: pip install pre-commit
       - run: npm install prettier
@@ -90,7 +90,7 @@ jobs:
       - uses: actions/checkout@v5
 
       # https://github.com/actions/setup-node
-      - uses: actions/setup-node@v5
+      - uses: actions/setup-node@v6
         with:
           node-version: "20"
 
